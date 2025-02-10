@@ -71,7 +71,7 @@ pip install -r requirements.txt
 1. Start the server:
 
 ```bash
-uvicorn main:app
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 2. Access the API documentation:
@@ -88,6 +88,7 @@ uvicorn main:app
 - `POST /api/v1/books/` - Create a new book
 - `PUT /api/v1/books/{book_id}` - Update a book
 - `DELETE /api/v1/books/{book_id}` - Delete a book
+- `FIND BOOK /api/v1/books/{book_id}` - Find a book by ID
 
 ### Health Check
 
@@ -129,6 +130,31 @@ The API includes proper error handling for:
 - Invalid genre types
 - Malformed requests
 
+## Deployment on Render
+
+### Steps to Deploy
+
+1. **Create a Render Account**  
+   - Go to [Render](https://render.com/) and sign up or log in.
+
+2. **Create a New Web Service**  
+   - Click on "New" → "Web Service."
+   - Connect your GitHub repository and select the `fastapi-book-project` repository.
+
+3. **Configure the Service**  
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - Set Environment: Choose Python 3.12.
+   - Auto Deploy: Enable automatic deployments for new commits.
+
+4. **Deploy the Service**  
+   - Click "Create Web Service."
+   - Wait for Render to build and deploy your service.
+
+5. **Access Your API**  
+   - Once deployed, you will get a live URL to access your API.
+   - Example: `https://your-app-name.onrender.com/docs` for API documentation.
+
 ## Contributing
 
 1. Fork the repository
@@ -144,3 +170,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For support, please open an issue in the GitHub repository.
+

@@ -84,3 +84,9 @@ class InMemoryDB:
         """
         if book_id in self.books:
             del self.books[book_id]
+
+    def find_book_by_id(self, book_id: str) -> Book:
+        for book in self.books.values():
+            if book.book_id == book_id:
+                return book
+        return None

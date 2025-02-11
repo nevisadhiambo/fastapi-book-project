@@ -88,6 +88,7 @@ uvicorn main:app
 - `POST /api/v1/books/` - Create a new book
 - `PUT /api/v1/books/{book_id}` - Update a book
 - `DELETE /api/v1/books/{book_id}` - Delete a book
+- `FIND BOOK /api/v1/books/{book_id}` - Find a book by ID
 
 ### Health Check
 
@@ -136,6 +137,54 @@ The API includes proper error handling for:
 3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## Deployment with Docker
+
+1. Build the Docker image:
+
+```bash
+docker build -t fastapi-book-project .
+```
+
+2. Run the Docker container:
+
+```bash
+docker run -d -p 8000:8000 fastapi-book-project
+```
+
+3. Access the API documentation:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## Docker Compose
+
+Alternatively, you can use Docker Compose for deployment:
+
+1. Create a `docker-compose.yml` file:
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+```
+
+2. Start the application with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+3. Access the API documentation:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
 ## License
 

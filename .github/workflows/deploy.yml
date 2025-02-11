@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main 
-  pull_request:
-    types: [closed]
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -16,6 +12,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
     
     - name: Set up ssh key
       run: |
@@ -28,6 +33,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_ssh_key.pem ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
         cd /home/ubuntu/fastapi-book-project
         git pull origin main
+        source venv/bin/activate
         pip install -r requirements.txt
         sudo systemctl restart fastapi
         EOF

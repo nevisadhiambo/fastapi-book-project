@@ -1,7 +1,11 @@
-name: CD Pipeline
+name: Deploy
 
 on:
   push:
+    branches:
+      - main 
+  pull_request:
+    types: [closed]
     branches:
       - main
 
@@ -10,28 +14,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up ssh key
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_ssh_key.pem
+        chmod 600 ~/.ssh/ec2_ssh_key.pem
+       
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_ssh_key.pem ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
+        cd /home/ubuntu/fastapi-book-project
+        git pull origin main
+        source venv/bin/activate
+        pip install -r requirements.txt
+        sudo systemctl restart fastapi
+        EOF
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      -name: Set up ssh key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{secrets.EC2_SSH_KEY}}" > ~/.ssh/ec2_ssh_key.pem
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      
-
-      - name: Set up Docker Build
-        run: |
-          docker build -t fastapi-app .
-          docker-compose up -d
+   
